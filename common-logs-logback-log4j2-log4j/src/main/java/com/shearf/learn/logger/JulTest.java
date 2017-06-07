@@ -1,5 +1,7 @@
 package com.shearf.learn.logger;
 
+import org.slf4j.bridge.SLF4JBridgeHandler;
+
 import java.util.logging.Logger;
 
 /**
@@ -8,6 +10,11 @@ import java.util.logging.Logger;
 public class JulTest {
 
     private static final Logger LOGGER = Logger.getLogger(JulTest.class.getName());
+
+    static {
+        SLF4JBridgeHandler.removeHandlersForRootLogger();
+        SLF4JBridgeHandler.install();
+    }
 
     public static void main(String[] args) {
 
