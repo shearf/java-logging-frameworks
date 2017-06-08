@@ -611,6 +611,46 @@ maven
 #### 5. log4j1和log4j2这种像同一套系统，为什么需要区分？
 log4j 2是对log4j的升级，log4j已经停止维护。
 
+### spring MVC与spring boot中日志框架的应用
+spring MVC中的日志依赖于Commons-logging(JCL)，选择一个日志系统去实现jcl接口就可以了
+
+1. use log4j 2
+
+```
+<dependencies>    <dependency>
+    	<groupId>org.springframework</groupId>
+    	<artifactId>spring-core</artifactId> <version>4.3.8.RELEASE</version>    </dependency>    <dependency>		<groupId>log4j</groupId>
+		<artifactId>log4j</artifactId>
+		<version>1.2.17</version>    </dependency></dependencies>
+```
+2. use slf4j with logback
+
+spring代码包中排除对commons-logging的依赖，在选择slf4j需要的包
+
+```
+<dependencies>    <dependency>
+	    <groupId>org.springframework</groupId>
+	    <artifactId>spring-core</artifactId>
+	    <version>4.3.8.RELEASE</version>
+	    <exclusions>
+	    	<exclusion>
+	    		<groupId>commons-logging</groupId>
+	    		<artifactId>commons-logging</artifactId>      		</exclusion>    	</exclusions>    </dependency>
+    <dependency>
+    	<groupId>org.slf4j</groupId>
+    	<artifactId>jcl-over-slf4j</artifactId>
+    	<version>1.7.21</version>
+    	<scope>runtime</scope>    </dependency>
+    <dependency>
+    	<groupId>org.slf4j</groupId>
+    	<artifactId>jcl-over-slf4j</artifactId>
+    	<version>1.7.21</version>    </dependency>    <dependency>
+    	<groupId>ch.qos.logback</groupId>
+    	<artifactId>logback-classic</artifactId>
+    	<version>1.1.7</version>    </dependency></dependencies>
+```
+
+
 
 
 
