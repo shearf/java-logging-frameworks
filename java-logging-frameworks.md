@@ -595,9 +595,21 @@ maven
 根据自己的需求来选择日志系统
 
 1. 先选择日志接口，slf4j or commons-logging?
-2. 
+2. 选择log4j 2 还是 logback作为日志底层 （不建议选择jul, log4j）
+3. 根据系统中存在的日志系统选择相应的log4j 2或者slf4j与这些系统的桥接包，来接管系统已有的日志系统到你选择的日志系统(log4j 2 or logback)
 
+***注意包存在冲突，不能同时存在，原因是一些包是做桥接的，将日志系统A委托给日志系统B实现，存在日志A委托给B，B又委托给A，就存在冲突，产生内存溢出***
 
+* jcl-over-slf4j 与 slf4j-jcl
+* log4j-over-slf4j 与 slf4j-log4j12
+* jul-to-slf4j 与 slf4j-jdk14
+
+#### 3. 有些包应该是属于同一个系统，为什么要拆分那么包，如logback-core、logback-classic、logback-access？
+日志系统内，各个包的作用不同，做了合理的业务拆分，可以根据具体业务需求加载，更合理。详见各个包的作用说明
+#### 4. log4j-over-slf4j，slf4j-jcl这些包名看起来跟两个系统有关系，那么关系是什么？为什么会有这些关系？
+因为一个程序或者系统依赖的lib中各个库都有自己的日志系统实现，可能才log4j，jul，并采用不同的日志统一接口，commons-log或slf4j。程序或者系统选择或需要采用slf4j+logback，在不改动lib库依赖的包代码的前提下，通过log4j-over-slf4j这样的包，来将lib库中日志系统委托给slf4j+logback实现。
+#### 5. log4j1和log4j2这种像同一套系统，为什么需要区分？
+log4j 2是对log4j的升级，log4j已经停止维护。
 
 
 
