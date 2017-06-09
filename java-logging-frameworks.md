@@ -611,10 +611,10 @@ maven
 #### 5. log4j1和log4j2这种像同一套系统，为什么需要区分？
 log4j 2是对log4j的升级，log4j已经停止维护。
 
-### spring MVC与spring boot中日志框架的应用
+### spring MVC中日志框架的应用
 spring MVC中的日志依赖于Commons-logging(JCL)，选择一个日志系统去实现jcl接口就可以了
 
-1. use log4j 2
+1. spring mvc use log4j 2
 
 ```
 <dependencies>    <dependency>
@@ -623,7 +623,7 @@ spring MVC中的日志依赖于Commons-logging(JCL)，选择一个日志系统�
 		<artifactId>log4j</artifactId>
 		<version>1.2.17</version>    </dependency></dependencies>
 ```
-2. use slf4j with logback
+2. spring mvc use slf4j with logback
 
 spring代码包中排除对commons-logging的依赖，在选择slf4j需要的包
 
@@ -649,8 +649,42 @@ spring代码包中排除对commons-logging的依赖，在选择slf4j需要的包
     	<artifactId>logback-classic</artifactId>
     	<version>1.1.7</version>    </dependency></dependencies>
 ```
+### spring boot中日志框架的应用
+spring boot 用JCL作为日志接口，开放底层实现，默认支持JUL，Log4j2和Logback；如果用Starters包，那么底层实现用的是logback。
 
+1. 使用springboot自带的日志配置来实现日志配置
 
+```
+ logging.level.root=WARN
+ logging.level.org.springframework.web=DEBUG
+ logging.level.org.hibernate=ERROR
+ logging.file=${LOG_FILE}
+ logging.path=${LOG_PATH}
+ logging.pattern.console=${CONSOLE_LOG_PATTERN}
+ ...
+```
+> 详情参见: [spring boot reference logging](http://docs.spring.io/spring-boot/docs/1.5.4.RELEASE/reference/htmlsingle/#boot-features-logging)
 
+2. 使用logback的配置文件来做日志配置
 
+spring boot支持logback-spring.xml, logback-spring.groovy, logback.xml or logback.groovy来做日志配置，推荐使用-spring后缀的配置文件来作为spring boot中的logback配置使用，否则不一定能完全控制日志的初始化，Spring boot包含了很多logback的扩展，如果使用logback.xml或logback.groovy的配置，那么扩展将无法生效。
+
+**logback.xml或logback.groovy的优先级高于logback-spring.xml,logback-spring.groovy，两者共存使用优先级高的配置文件**
+> 详见: [boot-features-custom-log-configuration](http://docs.spring.io/spring-boot/docs/1.5.4.RELEASE/reference/htmlsingle/#boot-features-custom-log-configuration)
+
+3. 使用log4j2来做日志实现
+如果是用starters的前提下，需要排除Logback然后加入log2j 2的依赖；如果不用starters的包，那么使用jcl-over-slf4j。
+
+```
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-web</artifactId></dependency><dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter</artifactId>
+	<exclusions>		<exclusion>			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-logging</artifactId>        </exclusion>    </exclusions></dependency><dependency>	<groupId>org.springframework.boot</groupId>	<artifactId>spring-boot-starter-log4j2</artifactId>
+</dependency>
+```
+**跟Logback的配置一样，springboot推荐使用log4j-spring.xml来自定义配置log4j2；优先级还是log4j.xml高**
+### 集成日志服务
 
